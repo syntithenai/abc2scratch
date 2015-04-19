@@ -27,8 +27,9 @@
 		///
 		MIDI.loader = new sketch.ui.Timer;
 		MIDI.loadPlugin({
-			//soundfontUrl: "MIDI.js-master/examples/soundfont/FluidR3_GM",
+			//soundfontUrl: "MIDI.js-master/examples/soundfont/",
 			soundfontUrl: "midi-js-soundfonts-master/FluidR3_GM/",
+			instruments: ["electric_grand_piano","clarinet"],
 			onprogress: function(state, progress) {
 				MIDI.loader.setValue(progress * 100);
 			},
@@ -40,9 +41,11 @@
 				/// this sets up the MIDI.Player and gets things going...
 				player = MIDI.Player;
 				player.timeWarp = 1; // speed the song is played back
-				//player.loadFile(document.getElementById('midilink').href, false) ;//player.start);
-var a='data:audio/mid;base64,TVRoZAAAAAYAAQABAMBNVHJrAAAARwD/WAQEAhgIAP9RAwehIAD/AwlOZXcgVHJhY2sAwHMAkDxkMoA8MIEOkDxkMoA8MIEOkDxkMoA8MIEOkDxkgT+APDAB/y8A';
-				player.loadFile(a,0);
+				//player.loadFile(document.getElementById('midilink').href, 0) ;//player.start);
+				//var 
+				var a=document.getElementById('midilink').href;
+				player.loadFile(a,false);
+				document.getElementById('midilink').href=a;
 				///
 				//ColorSphereBackground();
 				MIDIPlayerPercentage(player);

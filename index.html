@@ -35,6 +35,8 @@
 <script src="MIDI.js-master/examples/inc/colorspace.js" type="text/javascript"></script>
 <script src="MIDI.js-master/examples/inc/event.js" type="text/javascript"></script>
 <script src="midiplayer.js" type="text/javascript"></script>
+<script src='abc2scratch.js' ></script>	
+<script>$(document).ready(function() {loadMidiPlayer();})</script>
 <script type="text/javascript">
 	window.onload = function() {
 		new ABCJS.Editor("abc", { canvas_id: "canvas",
@@ -58,14 +60,14 @@ ul#song li {list-style: none; }
 #parts .part {float:left; vertical-align: top;}
 #parts .part  {display: inline; border: 1px solid grey; background-color: lightblue; margin-left: 1em;}
 #warnings  {border: 1px solid black;}
-#dheading {}
+#heading {  padding-right: 1em;}
 #menu {display : inline;}
 #menu a {padding-left; 10px; padding-top: 10px;}
-#menu {float: left; }
-.player {float: right; width: 700px; height: 42px; box-shadow: 0 -1px #000; margin-bottom: 0; border-bottom-right-radius: 0; border-bottom-left-radius: 0;}
+#menu {float: left;  padding-right: 1em;}
+.player {float: left; width: 700px; height: 42px; box-shadow: 0 -1px #000; margin-bottom: 0; border-bottom-right-radius: 0; border-bottom-left-radius: 0;}
 #song {display: block; clear: both;}
 #pausePlayStopStop, #pausePlayStop { width: 50px;}
-#toggleabc img,#save img, #load img,#midilink img {width: 48px;}
+#toggleabc img,#save img, #load img,#midilink img,#help img {width: 48px;}
 textarea#abc  {width: 70em; height: 10em; display: block}
 </style>
 <div id='fileselector' style='display:none' >	
@@ -75,7 +77,7 @@ textarea#abc  {width: 70em; height: 10em; display: block}
 	
 </div>
 <div id="body" >
-	<h3 id='heading' >Scratch Song Creator</h3>
+	<div id='heading' >Scratch Song Creator</div>
 	<div id='menu' > 
 		
 		<a href='#' id='load' title='open song' ><img src='open.jpg' /></a>
@@ -83,8 +85,9 @@ textarea#abc  {width: 70em; height: 10em; display: block}
 		<a href='#'  target='_new' download='song.sprite' id='download' title='download scratch' ><img src='scratch.jpg' /></a>
 		<span id="midi" ><img src='scratch.jpg' /></span>
 		<a href='#'  id='toggleabc' title='show/hide abc' ><img src='toggle.jpg' /></a>
+		<a href='#'  id='help' title='help' ><img src='help.png' /></a>
 	</div>
-
+	
 	<div class="player" >
 		<div style="margin: 0 auto; width: 120px; float: left;">
 			<input type="image" src="MIDI.js-master/examples/images/play.png" align="absmiddle" value="pause" onclick="pausePlayStop()" id="pausePlayStop">
@@ -98,7 +101,6 @@ textarea#abc  {width: 70em; height: 10em; display: block}
 			<span id="time2" class="time" style="text-align: left;">-0:00</span>
 		</div>
 	</div>
-	<script>$(document).ready(function() {loadMidiPlayer();})</script>
 	
 	<ul id="song" >
 		<li><div id="warnings"></div>
@@ -134,4 +136,4 @@ CEE2 | GEE2 |GGGG | C4||</textarea>
 </div>
 
 
-<script src='abc2scratch.js' ></script>	
+	

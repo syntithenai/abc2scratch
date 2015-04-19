@@ -51,10 +51,10 @@ $(document).ready(function() {
 	});
 	// click download scratch sprite
 	$('#download').click(function() {
-		createScratchLink('#title','#abc','#download');
+		createScratchLink('#title',$('#song .part'),'#download');
 		//return true;
 	});
-	createScratchLink('#title','#abc','#download');
+	createScratchLink('#title',$('#song .part'),'#download');
 	
 	// update UI fields into single ABC and rerender music/midi
 	$('.parts .part').keyup(function() {
@@ -98,6 +98,7 @@ function bindAddDelete(c) {
 function combineABC() {
 	clearTimeout();
 	setTimeout(function() {
+		pausePlayStop(true);
 		var c="X:0\n";
 		c+='T:'+$('#title').val()+"\n";
 		c+='C:'+$('#composer').val()+"\n";
@@ -119,9 +120,10 @@ function combineABC() {
 			c+=$.trim($('textarea',v).val())+"\n";
 		});
 		$('#abc').val(c);
-		createScratchLink('#title','#abc','#download');
 		$('#abc').change();
+		createScratchLink('#title',$('#song .part'),'#download');
 		saveSong('__DEFAULT');
+		
 	}, 500);
 }
 
@@ -139,7 +141,8 @@ function deleteSong(saveAs) {
 		console.log(['songs', songs]);
 		if (typeof saveAs=="string" && saveAs.length>0) { 
 			songs[saveAs]=undefined;
-		}localStorage.setItem('scratchsongcreatorsongs',JSON.stringify(songs));
+		}
+		localStorage.setItem('scratchsongcreatorsongs',JSON.stringify(songs));
 	}
 }
 
@@ -232,10 +235,17 @@ function loadSong(loadAs) {
 /*
  * Change link target to be a data url containing a zip file 
  * in scratch format defining the song
+ * createScratchLink('#title',$('#song .part'),'#download');
  */
-function createScratchLink($titleSelector,$abcSelector,$linkSelector) {
-	var r='';
-		var v=$($abcSelector).val();
+function createScratchLink(titleSelector,parts,linkSelector) {
+	//
+	//[[107, 173, ['+sounds+']]],\
+	var sounds='';
+	var soundsList=[];
+	$.each(parts,function(k,part) {
+		var v=$('textarea',part).val();
+		var scriptSteps=[];
+		scriptSteps.push('["whenIReceive", "play"]');
 		for (var i=0; i<v.length; i++) {
 			var c=v.charAt(i);
 			// time multiplier
@@ -245,7 +255,7 @@ function createScratchLink($titleSelector,$abcSelector,$linkSelector) {
 				if (n=='1' || n=='2' || n=='3' || n=='4' || n=='5' || n=='6' || n=='7' || n=='8' || n=='9') {
 					timeModifier=n;
 					i+=1;
-				} else  if (n=='/' && i+2 < v.length) {
+				} else  if (n=='/' && (i+2 < v.length)) {
 					n=v.charAt(i+2);
 					timeModifier=1/n;
 					i+=2;
@@ -253,55 +263,62 @@ function createScratchLink($titleSelector,$abcSelector,$linkSelector) {
 			}
 
 			switch(c) {
-				case 'z' : r+='["rest:elapsed:from:",'+timeModifier+'],';
-				case 'A' : r+='["noteOn:duration:elapsed:from:", 47, '+timeModifier+'],';
+				case 'z' : scriptSteps.push('["rest:elapsed:from:",'+timeModifier+']');
+				case 'A' : scriptSteps.push('["noteOn:duration:elapsed:from:", 47, '+timeModifier+']');
 					break;
-				case 'B' : r=r+'["noteOn:duration:elapsed:from:", 49, '+timeModifier+'],';
+				case 'B' : scriptSteps.push('["noteOn:duration:elapsed:from:", 49, '+timeModifier+']');
 					break;
-				case 'C' : r=r+'["noteOn:duration:elapsed:from:", 48, '+timeModifier+'],';
+				case 'C' : scriptSteps.push('["noteOn:duration:elapsed:from:", 48, '+timeModifier+']');
 					break;
-				case 'D' : r=r+'["noteOn:duration:elapsed:from:", 50, '+timeModifier+'],';
+				case 'D' : scriptSteps.push('["noteOn:duration:elapsed:from:", 50, '+timeModifier+']');
 					break;
-				case 'E' : r=r+'["noteOn:duration:elapsed:from:", 52, '+timeModifier+'],';
+				case 'E' : scriptSteps.push('["noteOn:duration:elapsed:from:", 52, '+timeModifier+']');
 					break;
-				case 'F' : r=r+'["noteOn:duration:elapsed:from:", 53, '+timeModifier+'],';
+				case 'F' : scriptSteps.push('["noteOn:duration:elapsed:from:", 53, '+timeModifier+']');
 					break;
-				case 'G' : r=r+'["noteOn:duration:elapsed:from:", 55, '+timeModifier+'],';
+				case 'G' : scriptSteps.push('["noteOn:duration:elapsed:from:", 55, '+timeModifier+']');
 					break;
-				case 'a' : r=r+'["noteOn:duration:elapsed:from:", 57, '+timeModifier+'],';
+				case 'a' : scriptSteps.push('["noteOn:duration:elapsed:from:", 57, '+timeModifier+']');
 					break;
-				case 'b' : r=r+'["noteOn:duration:elapsed:from:", 59, '+timeModifier+'],';
+				case 'b' : scriptSteps.push('["noteOn:duration:elapsed:from:", 59, '+timeModifier+']');
 					break;
-				case 'c' : r=r+'["noteOn:duration:elapsed:from:", 60, '+timeModifier+'],';
+				case 'c' : scriptSteps.push('["noteOn:duration:elapsed:from:", 60, '+timeModifier+']');
 					break;
-				case 'd' : r=r+'["noteOn:duration:elapsed:from:", 62, '+timeModifier+'],';
+				case 'd' : scriptSteps.push('["noteOn:duration:elapsed:from:", 62, '+timeModifier+']');
 					break;
-				case 'e' : r=r+'["noteOn:duration:elapsed:from:", 64, '+timeModifier+'],';
+				case 'e' : scriptSteps.push('["noteOn:duration:elapsed:from:", 64, '+timeModifier+']');
 					break;
-				case 'f' : r=r+'["noteOn:duration:elapsed:from:", 65, '+timeModifier+'],';
+				case 'f' : scriptSteps.push('["noteOn:duration:elapsed:from:", 65, '+timeModifier+']');
 					break;
-				case 'g' : r=r+'["noteOn:duration:elapsed:from:", 67, '+timeModifier+'],';
+				case 'g' : scriptSteps.push('["noteOn:duration:elapsed:from:", 67, '+timeModifier+']');
 					break;
 			}
 			
-			r+="\n";
+			//r+="\n";
 		}
-		var sprite=getSpriteFromTemplate($($titleSelector).val(),r); 
-		// write as zip		
-		zip.createWriter(new zip.BlobWriter(), function(writer) {
-			writer.add("sprite.json", new zip.TextReader(sprite), function() {
-				// onsuccess callback
-				// TODO - replace with dataURLReader and data stored HERE
-				writer.add("0.svg", new zip.HttpReader('http://localhost/scratch/0.svg'), function() {		
-					// close the zip writer
-					writer.close(function(blob) {
-						$($linkSelector).attr('href',URL.createObjectURL(blob));
-						$($linkSelector).attr('download',$($titleSelector).val()+".sprite");
-					});
+		soundsList.push('['+parseInt(k*220)+',40,['+scriptSteps.join(",")+']]');
+		//[[107, 173, ['+sounds+']]],\
+	});
+	sounds='['+soundsList.join(",")+'],';
+	console.log(sounds);
+	//+='[['+parseInt(k+100)+','+parseInt(k+100)+',['+r+']]]';
+		
+	
+	var sprite=getSpriteFromTemplate($(titleSelector).val(),sounds); 
+	// write as zip		
+	zip.createWriter(new zip.BlobWriter(), function(writer) {
+		writer.add("sprite.json", new zip.TextReader(sprite), function() {
+			// onsuccess callback
+			// TODO - replace with dataURLReader and data stored HERE
+			writer.add("0.svg", new zip.HttpReader('http://localhost/scratch/0.svg'), function() {		
+				// close the zip writer
+				writer.close(function(blob) {
+					$(linkSelector).attr('href',URL.createObjectURL(blob));
+					$(linkSelector).attr('download',$(titleSelector).val()+".sprite");
 				});
 			});
 		});
-
+	});
 }
 
 
@@ -309,7 +326,7 @@ function getSpriteFromTemplate(title,sounds) {
 	if (!title) title='Song'; 
 	return '{\
 	"objName": "Song '+title+'",\
-	"scripts": [[107, 173, ['+sounds+']]],\
+	"scripts": '+sounds+'\
 	"sounds": [],\
 	"costumes": [{\
 			"costumeName": "girl1-a",\
