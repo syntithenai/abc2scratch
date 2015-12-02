@@ -150,6 +150,10 @@ function deleteSong(saveAs) {
 function saveSong(saveAs,checkOverwrite) {
 	console.log(['save',saveAs]);
 	var songString=localStorage.getItem('scratchsongcreatorsongs');
+	if (songString==null)  {
+		songString='{}';
+	}
+	console.log(['songstring',songString]);
 	if (typeof songString=="string") {
 		var songs= JSON.parse(songString);
 	
@@ -310,7 +314,7 @@ function createScratchLink(titleSelector,parts,linkSelector) {
 		writer.add("sprite.json", new zip.TextReader(sprite), function() {
 			// onsuccess callback
 			// TODO - replace with dataURLReader and data stored HERE
-			writer.add("0.svg", new zip.HttpReader('http://localhost/scratch/0.svg'), function() {		
+			writer.add("0.svg", new zip.HttpReader(document.location.href+'0.svg'), function() {		
 				// close the zip writer
 				writer.close(function(blob) {
 					$(linkSelector).attr('href',URL.createObjectURL(blob));
@@ -322,6 +326,13 @@ function createScratchLink(titleSelector,parts,linkSelector) {
 }
 
 
+function getSpriteFromTemplate(title,sounds) {
+	if (!title) title='Song'; 
+	return `
+{	"objName": "`+title+`",	"scripts": `+sounds+`	"sounds": [],	"costumes": [{			"costumeName": "girl1-a",			"baseLayerID": 0,			"baseLayerMD5": "afab2d2141e9811bd89e385e9628cb5f.svg",			"bitmapResolution": 1,			"rotationCenterX": 31,			"rotationCenterY": 100		}],	"currentCostumeIndex": 0,	"scratchX": 0,		"scratchY": 0,	"scale": 1,	"direction": 90,	"rotationStyle": "normal",	"isDraggable": false,	"indexInLibrary": 100000,	"visible": true,	"spriteInfo": {	}}`;
+}
+
+/*
 function getSpriteFromTemplate(title,sounds) {
 	if (!title) title='Song'; 
 	return '{\
@@ -350,7 +361,4 @@ function getSpriteFromTemplate(title,sounds) {
 	}\
 }';
 }
-
-/*
-
 */	
